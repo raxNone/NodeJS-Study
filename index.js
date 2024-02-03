@@ -1,19 +1,24 @@
-const express = require('express')
-var cors = require('cors')
-const app = express()
-const port = 3000
+var mysql      = require('mysql');
 
-app.use(cors())
+const dontenv = require('dotenv')
 
-app.get('/', (req, res) => {
-    res.send(index.html)
-})
-
-app.get('/sound/:name',(req,res)=>{
-    const {name} = req.params;
-    
-    res.json({'sound' : name})
-})
+dontenv.config();
 
 
-app.listen(port)
+var connection = mysql.createConnection(
+    {
+        host     : process.env.host,
+        user     : process.env.user,
+        password : process.env.password,
+        database : process.env.database,
+    }
+);
+
+connection.connect();
+ 
+connection.query('SELECT * from user', function (error, results, fields) {
+  if (error) throw error;
+  console.log('users: ', results);
+});
+ 
+connection.end();
